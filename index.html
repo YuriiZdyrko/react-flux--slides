@@ -3,7 +3,7 @@
 <head>
     <title>React.js and Flux architecture</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="./assets/css/base.css" rel="stylesheet" type="text/css" />
+    <link href="../assets/css/base.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
       .remark-inline-code{
         font-size: 18px;
@@ -14,7 +14,7 @@
 </head>
 <body>
     <header>
-        <img class="epam-logo" src="./assets/img/logo.png"/>
+        <img class="epam-logo" src="../assets/img/logo.png"/>
         <h1>React.js and Flux architecture</h1>
     </header>
 
@@ -33,9 +33,9 @@ Front-end training
 
 # React.js
 
-.img-wrap-70[![MVC-js](assets/img/react-logo.png)]
+![MVC-js](assets/img/react-logo.png)
 
-React.js was released by Facebook. It looks similar in shape but not in size to Angular.js, but it  has a very different philosophy underneath. React has a few key ideas:
+React.js was released by Facebook. It has a few key ideas:
 - virtual DOM
 - component framework
 - JavaScript syntax extension (JSX)
@@ -44,14 +44,9 @@ React.js was released by Facebook. It looks similar in shape but not in size to 
 Benefits:
 - fast rendering
 - simple API
-- DOM asbstracted away!
+- no direct DOM manipulation
 ---
 
-
-# How virtual DOM works
-
-//TODO: write how it works
----
 
 # Bootstrapping
 React components are widgets that can render themselves and react to user input.
@@ -83,8 +78,8 @@ This is smallest React component:
 - using JSX
 ```javascript
 var YourRootComponent = React.createClass(
-    render: function() {  
-        return <div>Hello world {date={new Date()}}</div> 
+    render: function() {
+        return <div>Hello world {date={new Date()}}</div>
     })
 ```
 
@@ -92,39 +87,12 @@ var YourRootComponent = React.createClass(
 - without JSX
 ```javascript
 var YourRootComponent = React.createClass(
-    render: function() {  
+    render: function() {
         return React.createElement('li', null, "Hello world" + {date={new Date()})
     })
 ```
 
 Render method's return value is transformed into virtual and real DOM
----
-
-# React.js data flow
-In React.js data is passed from parent components to children using props.
-
-Child components call parents, using passed callbacks.
-```javascript
-var ItemsList = React.createClass(
-    getInitialState: function() {
-        return {items: ["item1", "item2", "item3"]
-    },
-    _handleItemRemove: function(clickedItem) {
-        var filteredItems = this.state.items.filter(
-             function(item) {return item !== clickedItem}
-        )
-        this.setState({items: filteredItems}); 
-    }
-    render: function() {  
-        return <Item onRemove={this._handleItemRemove} items={this.state.items} />
-    })
-}
-```
-Imagination time!
-Imagine React application as a tree of components. Some components have state, and some pass state to their children.
-
-// TODO: draw diagram a la Flux diagram
-
 ---
 
 
@@ -141,18 +109,60 @@ var YourRootComponent = React.createClass(
 
     // Lifecycle methods
     componentWillMount
-    componentDidMount // Opportunity for component's DOM manipulation 
+    componentDidMount // Opportunity for component's DOM manipulation
     componentWillReceiveProps  // Opportunity to set component's state
     shouldComponentUpdate  // Opportunity to prevent rendering
     componentWillUpdate
-    componentDidUpdate 
+    componentDidUpdate
     componentWillUnmount // Opportunity to unregister event listeners
 
-    render: function() {  
+    render: function() {
         return <div>Hello world {date={new Date()}</div>
     }
 })
 ```
+---
+
+# React.js data flow
+In React.js data is passed from parent components to children using props.
+
+Child components call parents, using passed callbacks.
+```javascript
+var ItemsList = React.createClass(
+    getInitialState: function() {
+        return {items: ["item1", "item2", "item3"]
+    },
+    _handleItemRemove: function(clickedItem) {
+        var filteredItems = this.state.items.filter(
+             function(item) {return item !== clickedItem}
+        )
+        this.setState({items: filteredItems});
+    }
+    render: function() {
+        return <Item onRemove={this._handleItemRemove} items={this.state.items} />
+    })
+}
+```
+Imagination time!
+Imagine React application as a tree of components. Some components have state, and some pass state to their children.
+
+---
+
+# How virtual DOM works
+
+Every setState triggers newVirtualDOM - existingVirtualDOM comparison and re-renders the whole sub-tree, applying minimal updates to DOM.
+
+<img width='320px' style='float: right' src='assets/img/virtual-dom.png' />
+
+Ways to improve performance:
+-  call setState as low as possible
+-  use shouldComponentUpdate to prevent re-rendering of large sub-tree
+-  compare only State component receives with immutable values and PureRenderMixin.
+
+Preventing re-rendering:
+
+<img width='320px' style='float: right'  src='assets/img/virtual-dom-optimisation.png' />
+
 ---
 
 # Features I like most. #1 - Ease of composability
@@ -163,9 +173,7 @@ var YourRootComponent = React.createClass(
     render: function() {
         return (
             <BaseModal
-                modalClass={this.props.modalClass}
                 closeBtn={true}
-                header={this.props.header}
                 onClose={this.props.onClose}
                 isOpen={this.props.isOpen}
             >
@@ -177,7 +185,7 @@ var YourRootComponent = React.createClass(
                         <div className='input-pair__input-box'>
                             <MacSelect
                                 name='country'
-                                options={[{value: 'Ukraine', label: 'Ukraine'}, {value: 'USA', label: 'USA'}]}
+                                options={[{value: 'Ukraine', label: 'Ukraine'}, ...]}
                                 value={this.state.storedParams.country}
                                 onChange={this._onInputChange}
                             />
@@ -191,7 +199,7 @@ var YourRootComponent = React.createClass(
 # Features I like most. #2 - No templating language
 
 React Component instances are manipulated using plain old JavaScript
-		    
+
 ```javascript
 ...
 render: function() {
@@ -206,7 +214,7 @@ render: function() {
     );
 }
 ...
-	
+
 var obj = {
     a: <div>hello</div>,
     b: <ListItem />
@@ -218,7 +226,7 @@ var listItem = predicate ? <ListItemA /> : <ListItemB />
 
 ---
 # Features I like most. #3 - PropTypes
-PropTypes provide strict typing for component's parameters	
+PropTypes provide strict typing for component's parameters
 
 ```javascript
 var YourRootComponent = React.createClass(
@@ -237,120 +245,170 @@ var YourRootComponent = React.createClass(
 
 Now YourRootComponent will throw Console warning if initialized without required props or with props of wrong type.
 PropTypes also act as a component documentation.
+
 ---
 
-#Flux architecture
+# Features I like most. #4 - Lifecycle events
+// TODO: write about Event unregistering in componentWillUnmount to avoid memory leaks, preventing Render in componentWillReceiveProps optimization etc.
 
-- CQRS and task based UI
-- Motivation
-- Implementation
-- Interesting practical consequences
-	
-```javascript
-Views ---> (actions) ----> Dispatcher ---> (registered callback) ---> Stores -------+
-Ʌ                                                                                   |
-|                                                                                   V
-+-- (Controller-Views "change" event handlers) ---- (Stores emit "change" events) --+
-```
 ---
 
-# Motivation for Flux architecture
-	
-	
-# CQRS, Flux Stores
-CQRS - Command Query Responsibility Segregation. This pattern means using a different models to update and read information. In simple Flux architecture we don't have separate object models, same Model has different interfaces for their command side and their query side.
+# Flux architecture.
+React components provide fine way to compose UI widgets and pass data down Component tree. But if you app grows, same data may be needed in multiple subtrees of your Component tree.
 
-	
+Flux architecture gives you a way to share data between many UI  components, with minimal coupling and simple unidirectional data-flow.
+
+Flux building blocks: React Components, Action Creators, Dispatcher, Stores.
+
+![MVC-js](assets/img/flux-drawing.jpg)
+
 ---
 
-# Flux architecture. Task-based UI
-Components now nothing about Models. 
-They can only trigger methods, which are naming specific 'tasks' in application.
+# Flux architecture. Components
+Components are decoupled from Stores.
+- to read from Store they use 'change' event.
+- to write to Store they use Action Creators.
 
-Typical task names:
 ```javascript
-	advancedSearch, loadMoreSearchResults, selectItem, sortItems, fetchItems
-```
-Code example
-```javascript
-var AdvancedSearch = React.createClass(
-    _handleSearch: function(searchParams) {
-       actions.search(searchParams); // actions is object containing all Tasks
+var AssetsList = React.createClass(
+    componentDidMount: function() {
+        assetsStore.on('change', function() {
+            this.setState({selectedAssets: assetsStore.getState().selectedAssets}) // read
+        })
     }
-    render: function() {  
-        return <SearchForm onSubmit={this._handleSearch} />
+    _handleLike: function() {
+       actionCreators.likeAssets(this.state.selectedAssets); // write
+    }
+    render: function() {
+        return <button onSubmit={this._handleLike}>
+            Number of selected {this.state.assets.length}
+        </button> />
     })
 }
-```	
+```
 
 ---
-	
-# Flux architecture. Tasks
 
-Each task as a result triggers Dispatcher event.
+# Flux architecture. Action Creators
+
+Action Creators represent Application Service Layer from DDD. It contains all tasks the system can perform and is an application's boundary for the Stores from the perspective of interacting clients (mostly Components).
+
+Typical Action Creators methods:
+```javascript
+	likeAssets, loadMoreSearchResults, selectAuthor, likeAssets, fetchAllItems
+```
+
+Action creators can make AJAX requests. They always trigger Dispatcher events (Actions), to which Stores are subscribed.
+
+```javascript
+module.exports = {
+    sortAssets: function(assets) {
+        dispatcher.dispatch(
+            constants.SORT_ASSETS, assets // trigger Dispatcher event (Action)
+        );
+    },
+    likeAssets: function(assets) {
+        dispatcher.dispatch(constants.LIKE_ASSETS_PROGRESS);
+        assetsDao.like(assets).then(function() { // AJAX request
+            dispatcher.dispatch(constants.LIKE_ASSETS_SUCCESS, assets);
+        });
+    },
+```
+
+---
 
 
-# Flux architecture. Dispatcher (central event hub)
-View invokes Task, which triggers a Dispatcher events (Actions).
+
+# Flux architecture. Dispatcher
+The dispatcher is a singleton, and operates as the central hub of data flow in a Flux application. It is a registry of callbacks, and can invoke these callbacks in order.
 
 Benefits of passing all Model-mutating events through central Event hub:
 - Ease of debugging
-- Synchronization of callbacks, what listen same event
+- Synchronization of callbacks, what listen to same event
+
+In Action Creator
+```javascript
+    sortAssets: function(assets) {
+        dispatcher.dispatch(constants.SORT_ASSETS, assets);
+    }
+```
+
+In Store
+```javascript
+...
+this.bindActions(
+      SORT_ASSETS, this.handleSort // Bind to Dispatcher event
+...
+```
+---
+
+# Flux architecture. Stores.
+
+Store is a wrapper for your Model which gives separate write and read interfaces.
+- write interface corresponds to actions your system invokes on Model;
+- Read interface corresponds to data UI needs from Model.
+
+![MVC-js](assets/img/store.png)
 
 ---
-	
-# Flux architecture. Stores.	
-This means model mutation occur only after Dispatcher event.
-Task based UI prevents direct Models manipulation and provides encapsulation.
 
-
-Events, to which Model is subscribed act as a Service Layer. A Service Layer defines an application's boundary and its a set of available operations from the perspective of interfacing client layers.
-
-So, if we want to interact with Store - we have to use Service Layer.
-	
----
-
-# Example of Store	
-```javascript	
+# Example of Store
+```javascript
 module.exports = Fluxxor.createStore({
 	initialize: function () {
-	    // initial state
-        this.allSalesKits = [];
-        this.filteredSalesKits = [];
-        this.salesKitsFilter = [];
-
-	    // CQRS write interface (subscribe to Dispatcher events)
-        this.bindActions(
-            constants.GET_SALES_KITS_SUCCESS, this.getSalesKitsSuccess,
-            constants.PUSH_SALES_KITS_FILTER, this.pushSalesKitsFilter
+        this.assets = [];
+        this.likedAssets = [];
+        // Write interface
+        this.bindActions( // Subscribe to Dispatcher events (Actions)
+            constants.GET_ASSETS_SUCCESS, this.getAssetsSuccess,
+            constants.LIKE_ASSETS_SUCCESS, this.likeAssetsSuccess
         );
     },
-
-    getSalesKitsSuccess: function(kits) {...}, // update allSalesKits & emit('change')
-    pushSalesKitsFilter: function(filter) {...}, // update filteredSalesKits & emit('change')
-
-    // CQRS read interface (when 'change' is triggered, components read this state)	
+    getAssetsSuccess: function(assets) {
+        this.assets = assets;
+        emit('change');
+    },
+    likeAssetsSuccess: function(assets) {...}, // update this.likedAssets & emit('change')
+    // Read interface
     getState: function () {
         return {
-            allSalesKits: this.allSalesKits,
-            filteredSalesKits: this.filteredSalesKits
+            assets: this.assets,
+            likedAssets: this.likedAssets,
+            selectedAssets: this.selectedAssets
         };
     }
 });
 ```
+
 ---
-	
-#Interesting practical consequences of applying CQRS
-- Stores clearly define subset of state they expose
-- Modifications of stores occur only after Action
 
-Both these features make develop
+# Features I like most. #1 Unidirectional data-flow.
 
----	
+// TODO: Say how it makes understanding/debugging code easier
+
+<img src='./assets/img/mvc.png' width='300px' />
+<img src='./assets/img/flux.png' width='540px' />
+
+---
+
+# Features I like most. #2 Read/write interfaces for Stores.
+
+// TODO: Show some benefits of this aspect of unidirectional data-flow (for example how it reduces coupling)
+
+---
+
+# Flux overview
+Flux architecture was inspired by CQRS and Domain Driven Design.
+
+Some links to read more:
+- http://jaysoo.ca/2015/02/06/what-the-flux/
+- http://codebetter.com/gregyoung/2010/02/16/cqrs-task-based-uis-event-sourcing-agh/
+
+---
     </textarea>
 <!-- ================== End of Slides ================== -->
 
-    <script src="./assets/js/remark-latest.min.js" type="text/javascript"></script>
+    <script src="../assets/js/remark-latest.min.js" type="text/javascript"></script>
     <script type="text/javascript">remark.create({highlightStyle: 'github'});</script>
 </body>
 </html>
