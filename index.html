@@ -41,17 +41,9 @@ Front-end training
 
 ---
 
-# Used by large companies
-- Some widgets for facebook
-- Instagram
-- New York Times
-- Khan Academy
-
----
-
 # React.js
 
-![MVC-js](assets/img/react-logo.png)
+<img width='120px' src="assets/img/react-logo.png" />
 
 React.js key ideas:
 - virtual DOM
@@ -87,7 +79,7 @@ React.render(<YourRootComponent />, document.getElementById('id1');
 It's possible to have multiple root nodes.
 ---
 
-# Component structure
+# Small component
 
 React component API is the most complicated part of React.js.
 
@@ -114,7 +106,7 @@ Render method's return value is transformed into virtual and real DOM
 ---
 
 
-# Component structure in depth
+# Component api
 
 ```javascript
 var YourRootComponent = React.createClass(
@@ -123,7 +115,7 @@ var YourRootComponent = React.createClass(
     getDefaultProps // default props values
     propTypes // Strict typed components!
 
-    mixins // Extend component with other components
+    mixins // Add mixins, which are smart about Lifecycle methods
 
     // Lifecycle methods
     componentWillMount
@@ -161,12 +153,15 @@ var ItemsList = React.createClass(
     })
 }
 ```
-Imagination time!
-Imagine React application as a tree of components. Some components have state, and some pass state to their children.
+---
+# Debugging tools
+<img width='800px' src='assets/img/react_debug.png' />
 
+<a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en">Chrome addon</a>
 ---
 
 # How virtual DOM works
+
 
 Every setState triggers newVirtualDOM - existingVirtualDOM comparison and re-renders the whole sub-tree, applying minimal updates to DOM.
 
@@ -181,10 +176,9 @@ Preventing re-rendering:
 
 <img width='320px' style='float: right'  src='assets/img/virtual-dom-optimisation.png' />
 
-TODO: Show how to use debugger dev tools
 ---
 
-# Features I like most. #1 - Ease of composability
+# Nice features. #1 - Ease of composability
 
 
 ```javascript
@@ -215,7 +209,7 @@ TODO: Show how to use debugger dev tools
 
 
 ---
-# Features I like most. #2 - No templating language
+# Nice features. #2 - No templating language
 
 React Component instances are manipulated using plain old JavaScript
 
@@ -244,7 +238,7 @@ var listItem = predicate ? <ListItemA /> : <ListItemB />
 ```
 
 ---
-# Features I like most. #3 - PropTypes
+# Nice features. #3 - PropTypes
 PropTypes provide strict typing for component's parameters
 
 ```javascript
@@ -262,168 +256,76 @@ var YourRootComponent = React.createClass(
 )
 ```
 
-Now YourRootComponent will throw Console warning if initialized without required props or with props of wrong type.
-PropTypes also act as a component documentation.
+---
+
+# Roadmap to convincing boss to use React.js
+
+- Facebook, Instagram, Khan Academy, New York Times use it
+- Simpler code
+- Ability to incrementally add it to existing projects
+- Performance
+- Stable version, compared to Angular
 
 ---
 
-# Features I like most. #4 - Lifecycle events
-// TODO: write about Event unregistering in componentWillUnmount to avoid memory leaks, preventing Render in componentWillReceiveProps optimization etc.
-
----
-
-# Flux architecture.
-React components provide fine way to compose UI widgets and pass data down Component tree. But if you app grows, same data may be needed in multiple subtrees of your Component tree.
-
-Flux architecture gives you a way to share data between many UI  components, with minimal coupling and simple unidirectional data-flow.
-
-Flux building blocks: React Components, Action Creators, Dispatcher, Stores.
-
+# Flux architecture
 ![MVC-js](assets/img/flux-drawing.jpg)
+<small>https://twitter.com/abdullin/status/553292397506220034/photo/1</small>
+
+Key features:
+- Unidirectional data flow
+- Flux stores are domain models, not ORM models
+- Flux is more similar to CQRS than MVC
 
 ---
 
-# Flux architecture. Components
-Components are decoupled from Stores.
-- to read from Store they use 'change' event.
-- to write to Store they use Action Creators.
+# Components
+<img width='600px'  src='assets/img/flux_component.png' />
+
+Components can only call Action Creators and cannot modify Stores directly.
+
+Example:
 
 ```javascript
-var AssetsList = React.createClass(
-    componentDidMount: function() {
-        assetsStore.on('change', function() {
-            this.setState({selectedAssets: assetsStore.getState().selectedAssets}) // read
-        })
-    }
-    _handleLike: function() {
-       actionCreators.likeAssets(this.state.selectedAssets); // write
-    }
-    render: function() {
-        return <button onSubmit={this._handleLike}>
-            Number of selected {this.state.assets.length}
-        </button> />
-    })
-}
-```
-
----
-
-# Flux architecture. Action Creators
-
-Action Creators represent Application Service Layer from DDD. It contains all tasks the system can perform and is an application's boundary for the Stores from the perspective of interacting clients (mostly Components).
-
-Typical Action Creators methods:
-```javascript
-	likeAssets, loadMoreSearchResults, selectAuthor, likeAssets, fetchAllItems
-```
-
-Action creators can make AJAX requests. They always trigger Dispatcher events (Actions), to which Stores are subscribed.
-
-```javascript
-module.exports = {
-    sortAssets: function(assets) {
-        dispatcher.dispatch(
-            constants.SORT_ASSETS, assets // trigger Dispatcher event (Action)
-        );
-    },
-    likeAssets: function(assets) {
-        dispatcher.dispatch(constants.LIKE_ASSETS_PROGRESS);
-        assetsDao.like(assets).then(function() { // AJAX request
-            dispatcher.dispatch(constants.LIKE_ASSETS_SUCCESS, assets);
-        });
-    },
-```
-
----
-
-
-
-# Flux architecture. Dispatcher
-The dispatcher is a singleton, and operates as the central hub of data flow in a Flux application. It is a registry of callbacks, and can invoke these callbacks in order.
-
-Benefits of passing all Model-mutating events through central Event hub:
-- Ease of debugging
-- Synchronization of callbacks, what listen to same event
-
-In Action Creator
-```javascript
-    sortAssets: function(assets) {
-        dispatcher.dispatch(constants.SORT_ASSETS, assets);
-    }
-```
-
-In Store
-```javascript
-...
-this.bindActions(
-      SORT_ASSETS, this.handleSort // Bind to Dispatcher event
-...
+actions.addProductToCart(this.props.product);
 ```
 ---
 
-# Flux architecture. Stores.
+# Action creators
+<img width='600px'  src='assets/img/flux_action_creator.png' />
 
-Store is a wrapper for your Model which gives separate write and read interfaces.
-- write interface corresponds to actions your system invokes on Model;
-- Read interface corresponds to data UI needs from Model.
-
-![MVC-js](assets/img/store.png)
-
----
-
-# Example of Store
+Example:
 ```javascript
-module.exports = Fluxxor.createStore({
-	initialize: function () {
-        this.assets = [];
-        this.likedAssets = [];
-        // Write interface
-        this.bindActions( // Subscribe to Dispatcher events (Actions)
-            constants.GET_ASSETS_SUCCESS, this.getAssetsSuccess,
-            constants.LIKE_ASSETS_SUCCESS, this.likeAssetsSuccess
-        );
-    },
-    getAssetsSuccess: function(assets) {
-        this.assets = assets;
-        emit('change');
-    },
-    likeAssetsSuccess: function(assets) {...}, // update this.likedAssets & emit('change')
-    // Read interface
-    getState: function () {
-        return {
-            assets: this.assets,
-            likedAssets: this.likedAssets,
-            selectedAssets: this.selectedAssets
-        };
-    }
-});
+loadMoreSearchResults: function(parameters) {
+    this.dispatch(constants.LOAD_MORE_SEARCH_RESULTS_PROGRESS);
+    searchDao.advancedSearch({parameters: parameters}).then(function(results) {
+        dispatcher.dispatch(constants.LOAD_MORE_SEARCH_RESULTS_SUCCESS, results);
+    }));
+},
 ```
-
 ---
 
-# Features I like most. #1 Unidirectional data-flow.
+# Stores
+<img width='600px'  src='assets/img/flux_store.png' />
 
-// TODO: Say how it makes understanding/debugging code easier
-
-<img src='./assets/img/mvc.png' width='300px' />
-<img src='./assets/img/flux.png' width='540px' />
-
+Store is a wrapper for Model with separate write and read interfaces.
+- write interface methods are invoked after matching Dispatcher Actions are triggered;
+- read interface corresponds to UI needs.
+- Stores don't mutate each other
 ---
 
-# Features I like most. #2 Read/write interfaces for Stores.
+# Buzzwords
+CQRS!
 
-// TODO: Show some benefits of this aspect of unidirectional data-flow (for example how it reduces coupling)
+Low Coupling!
 
----
+No Black-box framework magic!
 
-# Flux overview
-Flux architecture was inspired by CQRS and Domain Driven Design.
+Unidirectional dataflow easy to reason about!
 
-Some links to read more:
-- http://jaysoo.ca/2015/02/06/what-the-flux/
-- http://codebetter.com/gregyoung/2010/02/16/cqrs-task-based-uis-event-sourcing-agh/
+Performance optimization!
 
----
+// TODO: add some links to buzzwords
     </textarea>
 <!-- ================== End of Slides ================== -->
 
