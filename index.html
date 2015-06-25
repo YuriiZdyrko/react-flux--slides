@@ -31,20 +31,38 @@ Front-end training
 
 ---
 
+
+# 1 percent but growing!
+
+<img width='500px' src='assets/img/it-angular.png' />
+<img width='500px' src='assets/img/it-react.png' />
+
+<small>Screenshots from <a href="http://www.itjobswatch.co.uk/">http://www.itjobswatch.co.uk/</a></small>
+
+---
+
+# Used by large companies
+- Some widgets for facebook
+- Instagram
+- New York Times
+- Khan Academy
+
+---
+
 # React.js
 
 ![MVC-js](assets/img/react-logo.png)
 
-React.js was released by Facebook. It has a few key ideas:
+React.js key ideas:
 - virtual DOM
 - component framework
-- JavaScript syntax extension (JSX)
 
-
-Benefits:
+What makes React special:
+- simple to learn
 - fast rendering
-- simple API
+- composable components
 - no direct DOM manipulation
+- easy to integrate into existing projects
 ---
 
 
@@ -88,7 +106,7 @@ var YourRootComponent = React.createClass(
 ```javascript
 var YourRootComponent = React.createClass(
     render: function() {
-        return React.createElement('li', null, "Hello world" + {date={new Date()})
+        return React.createElement('li', null, "Hello world" + new Date())
     })
 ```
 
@@ -163,6 +181,7 @@ Preventing re-rendering:
 
 <img width='320px' style='float: right'  src='assets/img/virtual-dom-optimisation.png' />
 
+TODO: Show how to use debugger dev tools
 ---
 
 # Features I like most. #1 - Ease of composability
