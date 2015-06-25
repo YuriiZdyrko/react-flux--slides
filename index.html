@@ -59,7 +59,6 @@ What makes React special:
 
 
 # Bootstrapping
-React components are widgets that can render themselves and react to user input.
 React is bootstraped by rendering root React component into DOM.
 
 Method signature:
@@ -80,8 +79,7 @@ It's possible to have multiple root nodes.
 ---
 
 # Small component
-
-React component API is the most complicated part of React.js.
+React components are widgets that can render themselves and react to user input.
 
 This is smallest React component:
 
@@ -107,7 +105,7 @@ Render method's return value is transformed into virtual and real DOM
 
 
 # Component api
-
+React component API is the most complicated part of React.js.
 ```javascript
 var YourRootComponent = React.createClass(
     // Component-specific state
@@ -162,8 +160,7 @@ var ItemsList = React.createClass(
 
 # How virtual DOM works
 
-
-Every setState triggers newVirtualDOM - existingVirtualDOM comparison and re-renders the whole sub-tree, applying minimal updates to DOM.
+component.setState(...) ->  newVirtualDOM/existingDOM comparison -> rerender DOM
 
 <img width='320px' style='float: right' src='assets/img/virtual-dom.png' />
 
@@ -172,7 +169,7 @@ Ways to improve performance:
 -  use shouldComponentUpdate to prevent re-rendering of large sub-tree
 -  compare only State component receives with immutable values and PureRenderMixin.
 
-Preventing re-rendering:
+Optimize performance by preventing rerendering:
 
 <img width='320px' style='float: right'  src='assets/img/virtual-dom-optimisation.png' />
 
