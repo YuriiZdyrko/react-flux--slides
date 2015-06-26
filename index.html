@@ -53,7 +53,7 @@ What makes React special:
 - simple to learn
 - fast rendering
 - composable components
-- no direct DOM manipulation
+- no direct DOM manipulation, reduced inconsistencies between browsers
 - easy to integrate into existing projects
 ---
 
@@ -78,12 +78,32 @@ React.render(<YourRootComponent />, document.getElementById('id1');
 It's possible to have multiple root nodes.
 ---
 
-# Small component
-React components are widgets that can render themselves and react to user input.
+# React building blocks
+- React DOM Elements - wrappers around DOM elements.
+```javascript
+<input key={i} className="my-input" type="text" ref="myInput" />
+```
+- React Components - widgets that can render themselves and react to user input.
+```javascript
+<MyInput key={i} className="my-input" prop1={{name: "Bacon"}} onRemove={handleRemove} />
+```
 
-This is smallest React component:
+<br />
+React application is a tree of React DOM Elements and React Components
 
-- using JSX
+```javascript
+<div>  // React DOM Element
+    <Products />  // React Component
+    <Cart> // React Component
+        <span>inside</span> // React DOM Element
+    </Cart>
+</div>
+```
+
+---
+# JSX
+
+- with JSX React Elements are created for you
 ```javascript
 var YourRootComponent = React.createClass(
     render: function() {
@@ -91,16 +111,41 @@ var YourRootComponent = React.createClass(
     })
 ```
 
-
-- without JSX
+- without JSX you have to create React Elements
 ```javascript
 var YourRootComponent = React.createClass(
     render: function() {
-        return React.createElement('li', null, "Hello world" + new Date())
+        return React.createElement('div', null, "Hello world" + new Date())
     })
 ```
 
-Render method's return value is transformed into virtual and real DOM
+With JSX there's less code
+---
+
+# React.js data flow
+Data is stored as Components' State.
+```javascript
+component.setState({selected: true}
+```
+State and callbacks can be passed from parent components to children with Props.
+
+```javascript
+var ItemsList = React.createClass(
+    getInitialState: function() {
+        return {items: ["item1", "item2", "item3"]
+    },
+    _handleItemRemove: function(clickedItem) {
+        var filteredItems = this.state.items.filter(
+             function(item) {return item !== clickedItem}
+        )
+        this.setState({items: filteredItems});
+    }
+    render: function() {
+        // <Item /> component can access onRemove and items as this.props.onRemove...
+        return <Item onRemove={this._handleItemRemove} items={this.state.items} />
+    })
+}
+```
 ---
 
 
@@ -131,27 +176,7 @@ var YourRootComponent = React.createClass(
 ```
 ---
 
-# React.js data flow
-In React.js data is passed from parent components to children using props.
 
-Child components call parents, using passed callbacks.
-```javascript
-var ItemsList = React.createClass(
-    getInitialState: function() {
-        return {items: ["item1", "item2", "item3"]
-    },
-    _handleItemRemove: function(clickedItem) {
-        var filteredItems = this.state.items.filter(
-             function(item) {return item !== clickedItem}
-        )
-        this.setState({items: filteredItems});
-    }
-    render: function() {
-        return <Item onRemove={this._handleItemRemove} items={this.state.items} />
-    })
-}
-```
----
 # Debugging tools
 <img width='800px' src='assets/img/react_debug.png' />
 
@@ -245,8 +270,8 @@ var YourRootComponent = React.createClass(
         return {
            size: React.PropTypes.number,
            position: React.PropTypes.string.isRequired,
-           React.PropTypes.oneOf(['News', 'Photos']),
-           React.PropTypes.instanceOf(Message)
+           contentType: React.PropTypes.oneOf(['News', 'Photos']),
+           message: React.PropTypes.instanceOf(Message)
         }
     }
     ...
@@ -260,14 +285,16 @@ var YourRootComponent = React.createClass(
 - Facebook, Instagram, Khan Academy, New York Times use it
 - Simpler code
 - Ability to incrementally add it to existing projects
-- Easy to optimize rendering performance, compared to Angular or Knockout
+- Super-fast rendering speed, achieved by using immutable props
 - Stable version, compared to Angular
-
+- Code sharing between Node backend and frontend (isomorphic apps)
 ---
-# Immutable future
 
 
-React application should behave as function, which accepts input and gives DOM as output.
+# Live coding - React
+State is passed from top to bottom of React Component tree.
+
+<img width='500px'  src='assets/img/workflow_react.png' />
 
 ---
 
@@ -300,7 +327,7 @@ actions.addProductToCart(this.props.product);
 Example:
 ```javascript
 loadMoreSearchResults: function(parameters) {
-    this.dispatch(constants.LOAD_MORE_SEARCH_RESULTS_PROGRESS);
+    dispatcher.dispatch(constants.LOAD_MORE_SEARCH_RESULTS_PROGRESS);
     searchDao.advancedSearch({parameters: parameters}).then(function(results) {
         dispatcher.dispatch(constants.LOAD_MORE_SEARCH_RESULTS_SUCCESS, results);
     }));
@@ -315,7 +342,14 @@ Store is a wrapper for Model with separate write and read interfaces.
 - write interface methods are invoked after matching Dispatcher Actions are triggered;
 - read interface corresponds to UI needs.
 
-Stores don't mutate each other
+Stores don't mutate each other directly.
+---
+
+# Live coding - Flux
+Let Product components know if Product added to Cart with Flux Architecture.
+
+<img width='950px'  src='assets/img/workflow.png' />
+
 ---
 
 # Buzzwords
