@@ -260,8 +260,14 @@ var YourRootComponent = React.createClass(
 - Facebook, Instagram, Khan Academy, New York Times use it
 - Simpler code
 - Ability to incrementally add it to existing projects
-- Performance
+- Easy to optimize rendering performance, compared to Angular or Knockout
 - Stable version, compared to Angular
+
+---
+# Immutable future
+
+
+React application should behave as function, which accepts input and gives DOM as output.
 
 ---
 
@@ -308,7 +314,8 @@ loadMoreSearchResults: function(parameters) {
 Store is a wrapper for Model with separate write and read interfaces.
 - write interface methods are invoked after matching Dispatcher Actions are triggered;
 - read interface corresponds to UI needs.
-- Stores don't mutate each other
+
+Stores don't mutate each other
 ---
 
 # Buzzwords
