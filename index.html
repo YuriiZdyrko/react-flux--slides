@@ -127,7 +127,7 @@ Data is stored as Components' State.
 ```javascript
 component.setState({selected: true}
 ```
-State and callbacks can be passed from parent components to children with Props.
+"Data down, Events up"
 
 ```javascript
 var ItemsList = React.createClass(
@@ -185,7 +185,7 @@ var YourRootComponent = React.createClass(
 
 # How virtual DOM works
 
-component.setState(...) ->  newVirtualDOM/existingDOM comparison -> rerender DOM
+component.setState(...) ->  newVirtualDOM/existingVirtualDOM comparison -> rerender DOM
 
 <img width='320px' style='float: right' src='assets/img/virtual-dom.png' />
 
@@ -363,6 +363,9 @@ No Black-box framework magic!
 Unidirectional dataflow easy to reason about!
 
 Performance optimization!
+
+P.S. Learn more about React.js Flux architecture. It will help you to become better programmer.
+
 
 // TODO: add some links to buzzwords
     </textarea>
