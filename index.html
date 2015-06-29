@@ -300,8 +300,8 @@ var YourRootComponent = React.createClass(
 
 # Live coding - React
 State is passed from top to bottom of React Component tree.
+<div style="overflow:hidden"><img width='1000px'  src='assets/img/workflow.png' /></div>
 
-<img width='500px'  src='assets/img/workflow_react.png' />
 
 ---
 
@@ -342,6 +342,22 @@ loadMoreSearchResults: function(parameters) {
 ```
 ---
 
+# Dispacher
+There's single Dispatcher instance per application
+<img width='600px'  src='assets/img/dispatcher.png' />
+
+Dispatcher is not simple event-bus - it provides synchronization between Stores' callbacks.
+```javascript
+CityStore.dispatchToken = flightDispatcher.register(function(payload) {
+    if (payload.actionType === 'country-update') {
+        flightDispatcher.waitFor([CountryStore.dispatchToken]);
+        CityStore.city = getDefaultCityForCountry(CountryStore.country);
+    }
+});
+```
+---
+
+
 # Stores
 <img width='600px'  src='assets/img/flux_store.png' />
 
@@ -354,7 +370,7 @@ Stores don't mutate each other directly.
 
 # Live coding - Flux
 - let Product components know if Product was added to Cart
-- fix top-to-bottom Data flow and incapsulate business logic with Flux architecture
+- replace top-to-bottom Data flow with Flux architecture
 
 <img width='950px'  src='assets/img/workflow.png' />
 
