@@ -134,15 +134,17 @@ var ItemsList = React.createClass(
     getInitialState: function() {
         return {items: ["item1", "item2", "item3"]}
     },
-    _handleItemRemove: function(clickedItem) {
+    _handleItemRemove: function(removedItem) {
         var filteredItems = this.state.items.filter(
-             function(item) {return item !== clickedItem}
+             function(item) {return item !== removedItem}
         )
         this.setState({items: filteredItems});
     }
     render: function() {
         // <Item /> component can access onRemove and items as this.props.onRemove...
-        return <Item onRemove={this._handleItemRemove} items={this.state.items} />
+        return this.state.items.map(function(item, i) {
+            <Item onRemove={this._handleItemRemove} item={item} />
+        })
     })
 }
 ```
