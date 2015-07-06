@@ -52,9 +52,8 @@ React.js key ideas:
 What makes React special:
 - simple to learn
 - fast rendering
-- composable components
-- no direct DOM manipulation, reduced inconsistencies between browsers
-- easy to integrate into existing projects (file size 100kB, 26kB if gzipped)
+- composability
+- no direct DOM manipulation
 ---
 
 
@@ -83,9 +82,9 @@ It's possible to have multiple root nodes.
 ```javascript
 <input key={i} className="my-input" type="text" ref="myInput" />
 ```
-- React Components - widgets that can render themselves and react to user input.
+- React Components - widgets with custom attributes (props) and local state.
 ```javascript
-<MyInput key={i} className="my-input" prop1={{name: "Bacon"}} onRemove={handleRemove} />
+<MyInput key={i} className="my-input" product={{name: "Bacon"}} onRemove={handleRemove} />
 ```
 
 <br />
@@ -292,9 +291,8 @@ var YourComponent = React.createClass(
 - Facebook, Instagram, Khan Academy, New York Times use it
 - Simpler code
 - Ability to incrementally add it to existing projects
-- Super-fast rendering speed, achieved by using immutable props
-- Stable version, compared to Angular
-- Code sharing between Node backend and frontend (isomorphic apps)
+- Fast rendering speed
+- Code sharing between backend and frontend (isomorphic apps)
 ---
 
 
@@ -388,7 +386,7 @@ Unidirectional dataflow easy to reason about!
 
 Performance optimization!
 
-P.S. Learn more about React.js Flux architecture. It will help you to become better programmer.
+Learn more about React.js Flux architecture. It will help you become a better programmer.
 
 
 // TODO: add some links to buzzwords
