@@ -58,18 +58,10 @@ What makes React special:
 
 
 # Bootstrapping
-React is bootstraped by rendering root React component into DOM.
+1. Get latest version of react.js (100k minified, 31k minified and gzipped)
 
-Method signature:
-```javascript
-    ReactComponent render(
-		ReactElement element,
-		DOMElement container,
-		[function callback]
-	)
-```
+2. Render root React component into DOM:
 
-Method usage:
 ```javascript
 React.render(<YourRootComponent />, document.getElementById('id1'));
 ```
@@ -102,24 +94,53 @@ React application is a tree of React DOM Elements and React Components
 ---
 # JSX
 
+- without JSX you have to create React Elements
+```javascript
+var YourRootComponent = React.createClass({
+    render: function() {
+        return React.createElement('div', null, "Hello world" + new Date())
+})
+```
+
 - with JSX React Elements are created for you
 ```javascript
-var YourRootComponent = React.createClass(
+var YourRootComponent = React.createClass({
     render: function() {
         return <div>Hello world {date={new Date()}}</div>
     })
 ```
 
-- without JSX you have to create React Elements
-```javascript
-var YourRootComponent = React.createClass(
-    render: function() {
-        return React.createElement('div', null, "Hello world" + new Date())
-    })
-```
-
 With JSX there's less code
 ---
+
+
+# Component api
+React component API is the most complicated part of React.js.
+```javascript
+var YourComponent = React.createClass({
+    // Component-specific state
+    getInitialState // initial components state
+    getDefaultProps // default props values
+    propTypes // Strict typed components!
+
+    mixins // Add mixins, which are smart about Lifecycle methods
+
+    // Lifecycle methods
+    componentWillMount
+    componentDidMount // Opportunity for component's DOM manipulation
+    componentWillReceiveProps  // Opportunity to set component's state
+    componentWillUnmount // Opportunity to unregister event listeners
+    ...
+
+    render: function() { // Builds Virtual DOM
+        return <div>Hello world {date={new Date()}</div>
+    }
+})
+```
+
+'render' is the only required method, it's return value is used to build Virtual DOM
+---
+
 
 # React.js data flow
 Data is stored as Components' State.
@@ -150,43 +171,14 @@ var ItemsList = React.createClass(
 ---
 
 
-# Component api
-React component API is the most complicated part of React.js.
-```javascript
-var YourRootComponent = React.createClass(
-    // Component-specific state
-    getInitialState // initial components state
-    getDefaultProps // default props values
-    propTypes // Strict typed components!
-
-    mixins // Add mixins, which are smart about Lifecycle methods
-
-    // Lifecycle methods
-    componentWillMount
-    componentDidMount // Opportunity for component's DOM manipulation
-    componentWillReceiveProps  // Opportunity to set component's state
-    shouldComponentUpdate  // Opportunity to prevent rendering
-    componentWillUpdate
-    componentDidUpdate
-    componentWillUnmount // Opportunity to unregister event listeners
-
-    render: function() {
-        return <div>Hello world {date={new Date()}</div>
-    }
-})
-```
----
 
 
-# Debugging tools
-<img width='800px' src='assets/img/react_debug.png' />
 
-<a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en">Chrome addon</a>
----
 
-# React change detection 1
 
-component.setState(...) ->  newVirtualDOM/existingVirtualDOM comparison -> rerender DOM
+# React change detection
+
+component.setState(...) ->  newVirtualDOM/existingVirtualDOM comparison -> smart DOM rerender
 
 <img width='320px' style='float: right' src='assets/img/virtual-dom.png' />
 
@@ -195,15 +187,10 @@ Ways to improve performance:
 -  use shouldComponentUpdate to prevent re-rendering of large sub-tree
 -  compare only State component receives with immutable values and PureRenderMixin.
 
-Optimize performance by preventing rerendering:
+Optimize performance by preventing Virtual DOM rerendering:
 
 <img width='320px' style='float: right'  src='assets/img/virtual-dom-optimisation.png' />
 
----
-# React change detection 2
-
-<img width='600px' style='float: right' src='assets/img/onchange_immutable.svg' />
-<a href="http://teropa.info/blog/2015/03/02/change-and-its-detection-in-javascript-frameworks.html">article about change detection</a>
 ---
 
 # Nice features. #1 - Ease of composability
@@ -284,6 +271,13 @@ var YourComponent = React.createClass(
 )
 ```
 
+---
+
+
+# Debugging tools
+<img width='800px' src='assets/img/react_debug.png' />
+
+<a href="https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en">Chrome addon</a>
 ---
 
 # Roadmap to convincing boss to use React.js
